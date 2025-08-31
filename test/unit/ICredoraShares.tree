@@ -1,0 +1,37 @@
+ICredoraShares
+├── mint
+│   ├── should mint CRD shares to recipient
+│   ├── should emit SharesMinted event with share price
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should only be callable by Pool
+│   └── should increase total supply
+├── sharePrice
+│   ├── should calculate current share price using real wstETH balance
+│   ├── should query Pool for wstETH balance
+│   ├── should return correct price calculation
+│   ├── should handle zero CRD supply case
+│   └── should be view function
+├── calculatePrice
+│   ├── should calculate price from wstETH balance and CRD supply
+│   ├── should handle division correctly
+│   ├── should return 1e18 for initial 1:1 ratio
+│   ├── should handle zero supply edge case
+│   ├── should handle zero balance edge case
+│   └── should be pure function
+├── calculateSharesForDeposit
+│   ├── should calculate correct CRD shares for wstETH amount
+│   ├── should use current share price
+│   ├── should handle precision correctly
+│   ├── should revert on zero amount
+│   └── should be view function
+├── totalSupply
+│   ├── should return total CRD supply
+│   └── should be view function
+├── balanceOf
+│   ├── should return CRD balance for account
+│   ├── should return zero for accounts with no balance
+│   └── should be view function
+└── getPool
+    ├── should return pool contract address
+    └── should be view function

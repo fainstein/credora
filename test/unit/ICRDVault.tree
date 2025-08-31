@@ -1,0 +1,51 @@
+ICRDVault
+├── mintCRD
+│   ├── should mint CRD tokens to recipient
+│   ├── should emit CRDMinted event
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should only be callable by authorized addresses
+│   └── should increase total supply
+├── burnCRD
+│   ├── should burn CRD tokens from holder
+│   ├── should emit CRDBurned event
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should revert on insufficient balance
+│   ├── should only be callable by authorized addresses
+│   └── should decrease total supply
+├── transferCRDToNote
+│   ├── should transfer CRD to NoteIssuer
+│   ├── should emit CRDTransferredToNote event
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should revert on insufficient vault balance
+│   ├── should only be callable by NoteIssuer
+│   └── should decrease vault balance
+├── returnCRDFromNote
+│   ├── should accept CRD return from note
+│   ├── should emit CRDReturnedFromNote event
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should increase vault balance
+│   └── should be callable by anyone (for flexibility)
+├── approveNoteIssuer
+│   ├── should set approval for NoteIssuer
+│   ├── should emit NoteIssuerApproved event
+│   ├── should revert on zero address
+│   ├── should allow NoteIssuer to transfer CRD
+│   └── should only be callable by owner
+├── totalSupply
+│   ├── should return total CRD supply
+│   └── should be view function
+├── balanceOf
+│   ├── should return CRD balance of account
+│   ├── should return zero for accounts with no balance
+│   └── should be view function
+├── getCRDToken
+│   ├── should return CRD token contract address
+│   └── should be view function
+└── isAuthorized
+    ├── should return true for authorized addresses (Pool, NoteIssuer)
+    ├── should return false for unauthorized addresses
+    └── should be view function

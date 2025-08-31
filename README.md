@@ -1,176 +1,257 @@
-<img src="https://raw.githubusercontent.com/defi-wonderland/brand/v1.0.0/external/solidity-foundry-boilerplate-banner.png" alt="wonderland banner" align="center" />
-<br />
+# Credora Protocol
 
-<div align="center"><strong>Start your next Solidity project with Foundry in seconds</strong></div>
-<div align="center">A highly scalable foundation focused on DX and best practices</div>
+[![Foundry][foundry-badge]][foundry]
+[![License: MIT][license-badge]][license]
 
-<br />
+[foundry]: https://getfoundry.sh/
+[foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
+[license]: https://opensource.org/licenses/MIT
+[license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
 
-## Features
+A decentralized lending protocol where lenders deposit ETH (converted to wstETH) to earn yield through CRD tokens, and borrowers access credit via salary-verified loans. Features ERC1155 promissory notes, Symbiotic shared security integration, and a unique design where lenders benefit from protocol growth and borrower defaults.
 
-<dl>
-  <dt>Sample contracts</dt>
-  <dd>Basic Greeter contract with an external interface.</dd>
+**MVP Note**: This is a hackathon project focused on core deposit and lending functionality. Withdrawals and redemptions are marked as TODO for future implementation.
 
-  <dt>Foundry setup</dt>
-  <dd>Foundry configuration with multiple custom profiles and remappings.</dd>
+## Architecture Overview
 
-  <dt>Deployment scripts</dt>
-  <dd>Sample scripts to deploy contracts on both mainnet and testnet.</dd>
+### Core Components
 
-  <dt>Sample Integration, Unit, Property-based fuzzed and symbolic tests</dt>
-  <dd>Example tests showcasing mocking, assertions and configuration for mainnet forking. As well it includes everything needed in order to check code coverage.</dd>
-  <dd>Unit tests are built based on the <a href="https://twitter.com/PaulRBerg/status/1682346315806539776">Branched-Tree Technique</a>, using <a href="https://github.com/alexfertel/bulloak">Bulloak</a>.
+```
+src/interfaces/
+├── IPool.sol               # Main liquidity pool for ETH deposits (converted to wstETH)
+├── ICRDVault.sol           # Vault managing CRD token supply
+├── INoteIssuer.sol         # ERC1155 factory for promissory notes
+├── INote.sol               # ERC1155 note contract with CRD backing
+├── ICredoraShares.sol      # CRD token representing pool ownership
+├── ICRD.sol                # CRD token interface
+└── IVerifier.sol           # External proof verification
+```
 
-  <dt>Linter</dt>
-  <dd>Simple and fast solidity linting thanks to forge fmt.</dd>
-  <dd>Find missing natspec automatically.</dd>
+### Key Design Principles
 
-  <dt>Github workflows CI</dt>
-  <dd>Run all tests and see the coverage as you push your changes.</dd>
-  <dd>Export your Solidity interfaces and contracts as packages, and publish them to NPM.</dd>
-</dl>
+- **ETH to wstETH Conversion**: Users deposit ETH, converted to wstETH for shared security
+- **CRD Token System**: ERC20 tokens representing shares in the wstETH lending pool
+- **Symbiotic Integration**: wstETH deposited to Symbiotic vaults for network security rewards
+- **ERC1155 Notes**: Semi-fungible tokens representing loan obligations
+- **Proof-Based Lending**: Cryptographic verification for borrower eligibility
+- **Vault Architecture**: Separated token management for security
 
-## Setup
+## Protocol Flows
 
-1. Install Foundry by following the instructions from [their repository](https://github.com/foundry-rs/foundry#installation).
-2. Copy the `.env.example` file to `.env` and fill in the variables.
-3. Install rust dependencies with [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html):
-   1. `cargo install lintspec`
-   2. `cargo install bulloak`
-4. Install the dependencies by running: `yarn install`. In case there is an error with the commands, run `foundryup` and try them again.
+### Deposit & Yield Flow
 
-## Build
+1. **Lender Deposits**: User deposits ETH → converted to wstETH → receives CRD tokens (backed 1:1 initially)
+2. **Security Provision**: Pool deploys wstETH to Symbiotic vault, delegated to operators providing network security
+3. **Reward Collection**: Networks pay security rewards to Symbiotic vault
+4. **Share Appreciation**: CRD tokens appreciate as wstETH rewards accumulate
+5. **No Withdrawals**: Users hold CRD tokens indefinitely (withdrawals TODO for future)
 
-The default way to build the code is suboptimal but fast, you can run it via:
+### Lending Flow
+
+1. **Borrower Verification**: Provides cryptographic proof of income/eligibility
+2. **Loan Creation**: Issues ERC1155 note with CRD backing representing loan amount
+3. **Advance Payment**: Borrower deposits wstETH advance payment (20% of loan value)
+4. **Loan Lifecycle**: Note tracks repayment status and matures over time
+5. **Repayment**: Borrower repays principal + interest → wstETH funds added to pool
+6. **CRD Appreciation**: Lenders benefit through automatic CRD token appreciation
+
+### Default Flow
+
+1. **Default Declaration**: Unpaid loans after maturity
+2. **CRD Burn**: Loan-backed CRD tokens burned (no longer redeemable) - TODO for future
+3. **Advance Liquidation**: Borrower's wstETH advance payment added to Symbiotic vault as yield
+4. **CRD Appreciation**: Remaining CRD holders benefit from increased share value
+
+## Key Mechanics
+
+### CRD Token Economics
+
+```solidity
+// CRD tokens represent ownership in the wstETH lending pool
+// Price calculated in real-time: CRD_price = totalWstETH_in_Symbiotic_vault / totalCRD_supply
+// When network rewards accrue: CRD_price increases automatically
+// When defaults occur: CRD_price increases from advance payment liquidation
+// Always backed by: Current Symbiotic vault balance + advance payments from defaults
+// Note: Withdrawals not implemented in MVP (marked as TODO)
+```
+
+### Yield Sources & Price Updates
+
+1. **Network Security Rewards**: Networks pay for security provided by Symbiotic operators
+2. **Advance Payments**: Borrower advance payments → deposited to Symbiotic vault → price increases
+3. **Repayment Premiums**: Interest payments above principal → added to Symbiotic vault → price increases
+4. **Default Liquidation**: wstETH advance payments from defaults → added to Symbiotic vault → price increases
+5. **Real-time Price**: CRD price reflects current Symbiotic vault balance automatically
+6. **MVP Limitation**: No withdrawal/redemption functionality (marked as TODO)
+
+### Note System (ERC1155)
+
+- **Semi-Fungible**: Different note IDs for different loans
+- **CRD Backing**: Each note holds CRD tokens representing loan value
+- **Transferable**: Notes can be traded on secondary markets
+- **Lifecycle**: Active → Repaid/Defaulted → Redeemed
+
+### Verification System
+
+- **Cryptographic Proofs**: ZK proofs, signatures, oracles
+- **External Verifiers**: Third-party contracts handle validation
+- **Dynamic Amounts**: Proof determines maximum borrowable amount
+- **Conservative Ratios**: 20% advance payment requirement
+
+## Installation & Setup
+
+### Prerequisites
+
+- [Foundry](https://getfoundry.sh/)
+- [Node.js](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/)
+
+### Installation
 
 ```bash
-yarn build
+git clone <repository-url>
+cd credora
+yarn install
+forge install
 ```
 
-In order to build a more optimized code ([via IR](https://docs.soliditylang.org/en/v0.8.15/ir-breaking-changes.html#solidity-ir-based-codegen-changes)), run:
+### Build
 
 ```bash
-yarn build:optimized
+forge build
 ```
 
-## Running tests
-
-Unit tests should be isolated from any externalities, while Integration usually run in a fork of the blockchain. In this boilerplate you will find example of both.
-
-In order to run both unit and integration tests, run:
+### Test
 
 ```bash
-yarn test
+forge test                   # Run all tests
+forge test --match-contract PoolTest     # Run Pool tests
+forge test --match-contract NoteIssuerTest # Run NoteIssuer tests
 ```
 
-In order to just run unit tests, run:
+## API Reference
 
-```bash
-yarn test:unit
+### IPool
+
+```solidity
+// Core lending pool functions
+function deposit() payable returns (uint256 crdShares);
+function receivePayment(address from, address token, uint256 amount);
+// TODO: function redeemNote(uint256 noteId, address redeemer) returns (uint256 wstETHAmount);
+
+// Balance checking
+function getWstETHBalance() returns (uint256 wstETHBalance);
 ```
 
-In order to run unit tests and run way more fuzzing than usual (5x), run:
+### INoteIssuer
 
-```bash
-yarn test:unit:deep
+```solidity
+// Loan creation and management
+function createNote(uint256 amount, uint256 advancePayment, bytes calldata proof, address creditor) returns (uint256 noteId);
+function repay(uint256 noteId, uint256 amount) returns (uint256 actualPayment, uint256 remainingDebt);
+// TODO: function redeemNote(uint256 noteId, address redeemer) returns (uint256 wstETHAmount);
+
+// Note information
+function getNoteCRDBalance(uint256 noteId) returns (uint256);
+function getNoteRemainingDebt(uint256 noteId) returns (uint256);
+function getNote(uint256 noteId) returns (Note memory);
+
+// Utility functions
+function calculateRequiredCollateral(uint256 loanAmount) returns (uint256);
+function transferNote(uint256 noteId, address newOwner);
 ```
 
-In order to just run integration tests, run:
+### INote (ERC1155)
 
-```bash
-yarn test:integration
+```solidity
+// Token management
+function mintNote(address to, uint256 noteId, uint256 amount, address borrower, uint256 principal, uint256 rate, uint256 maturity, string calldata ipfsHash);
+function burnNote(address from, uint256 noteId, uint256 amount);
+
+// CRD management
+function depositCRD(uint256 noteId, uint256 amount);
+function withdrawCRD(uint256 noteId, uint256 amount);
+
+// Metadata and information
+function getNoteMetadata(uint256 noteId) returns (NoteMetadata memory);
+function getNoteCRDBalance(uint256 noteId) returns (uint256);
+function getNoteBorrower(uint256 noteId) returns (address);
+function isNoteMature(uint256 noteId) returns (bool);
 ```
 
-In order to check your current code coverage, run:
+### ICredoraShares
 
-```bash
-yarn coverage
+```solidity
+// CRD token functions
+function mint(address to, uint256 amount);
+function burn(address from, uint256 amount);
+function totalSupply() returns (uint256);
+function balanceOf(address account) returns (uint256);
+
+// Share calculations
+function sharePrice() returns (uint256);
+function calculatePrice(uint256 totalWstETHBalance, uint256 totalCRDSupply) returns (uint256);
+function calculateSharesForDeposit(uint256 wstETHAmount) returns (uint256);
+// TODO: function calculateWstETHForShares(uint256 shares) returns (uint256);
+
+// Yield management
+// TODO: function addYield(uint256 yieldAmount);
 ```
 
-In order to create a new `.t.sol` file from a `.tree` bulloak file, run:
+### IVerifier
 
-```bash
-yarn test:bulloak:scaffold
+```solidity
+// Proof verification
+function verifyProof(address user, bytes calldata proof) returns (bool isValid, uint256 maxLoan);
+function verifyProofDetailed(address user, bytes calldata proof) returns (bool, uint256, uint256, uint256);
+
+// Configuration
+function getDefaultMaxLoanAmount() returns (uint256);
+function getVerificationRequirements() returns (uint256, uint256, string[] memory);
 ```
 
-In order to fix or add missing tests to a `.t.sol` file after changing a `.tree` bulloak file, run:
+## Security Considerations
 
-```bash
-yarn test:bulloak:fix
-```
+### Access Control
+- **Role-Based Permissions**: Pool, NoteIssuer, and Vault have separate access controls
+- **Authorized Operations**: Critical functions require specific roles
+- **Emergency Controls**: Pausable functionality for security incidents
 
-<br>
+### Economic Security
+- **CRD Token Backing**: All CRD tokens are backed by USDC in the pool
+- **Yield Isolation**: External yield farming doesn't affect core protocol
+- **Conservative Ratios**: 20% collateral requirement for all loans
 
-## Deploy & verify
+### Smart Contract Security
+- **Input Validation**: Comprehensive parameter validation on all functions
+- **SafeERC20**: Protected ERC20 operations throughout the protocol
+- **Reentrancy Guards**: All external functions protected against reentrancy
+- **Overflow Protection**: SafeMath operations for all calculations
 
-### Setup
+## Development Roadmap
 
-Configure the `.env` variables and source them:
+### Phase 1 (Current)
+- ✅ Interface design and specification
+- ✅ Core protocol architecture
+- ✅ USDC-only focus
+- ✅ ERC1155 note system
 
-```bash
-source .env
-```
+### Phase 2 (Next)
+- 🔄 Contract implementations
+- 🔄 Yield farming integration
+- 🔄 Multi-collateral support
+- 🔄 Comprehensive testing
 
-Import your private keys into Foundry's encrypted keystore:
+### Phase 3 (Future)
+- 📋 Real verifier integration
+- 📋 Governance system
+- 📋 Cross-chain expansion
+- 📋 Advanced liquidation mechanisms
 
-```bash
-cast wallet import $MAINNET_DEPLOYER_NAME --interactive
-```
+## Contributing
 
-```bash
-cast wallet import $SEPOLIA_DEPLOYER_NAME --interactive
-```
+This is a hackathon project focused on clean architecture and innovative lending mechanics. The interface-first approach ensures clear separation of concerns and easy implementation.
 
-### Sepolia
+## License
 
-```bash
-yarn deploy:sepolia
-```
-
-### Mainnet
-
-```bash
-yarn deploy:mainnet
-```
-
-The deployments are stored in ./broadcast
-
-See the [Foundry Book for available options](https://book.getfoundry.sh/reference/forge/forge-create.html).
-
-## Export And Publish
-
-Export TypeScript interfaces from Solidity contracts and interfaces providing compatibility with TypeChain. Publish the exported packages to NPM.
-
-To enable this feature, make sure you've set the `NPM_TOKEN` on your org's secrets. Then set the job's conditional to `true`:
-
-```yaml
-jobs:
-  export:
-    name: Generate Interfaces And Contracts
-    # Remove the following line if you wish to export your Solidity contracts and interfaces and publish them to NPM
-    if: true
-    ...
-```
-
-Also, remember to update the `package_name` param to your package name:
-
-```yaml
-- name: Export Solidity - ${{ matrix.export_type }}
-  uses: defi-wonderland/solidity-exporter-action@1dbf5371c260add4a354e7a8d3467e5d3b9580b8
-  with:
-    # Update package_name with your package name
-    package_name: "my-cool-project"
-    ...
-
-
-- name: Publish to NPM - ${{ matrix.export_type }}
-  # Update `my-cool-project` with your package name
-  run: cd export/my-cool-project-${{ matrix.export_type }} && npm publish --access public
-  ...
-```
-
-You can take a look at our [solidity-exporter-action](https://github.com/defi-wonderland/solidity-exporter-action) repository for more information and usage examples.
-
-## Licensing
-The primary license for the boilerplate is MIT, see [`LICENSE`](https://github.com/defi-wonderland/solidity-foundry-boilerplate/blob/main/LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

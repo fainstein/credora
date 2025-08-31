@@ -1,0 +1,46 @@
+IPool
+├── constructor
+│   ├── should set credoraShares address
+│   ├── should revert with zero address
+│   └── should revert with invalid address
+├── deposit
+│   ├── should convert ETH to wstETH via stETH submit and wstETH wrap
+│   ├── should deposit wstETH to Symbiotic vault
+│   ├── should mint CRD shares proportionally
+│   ├── should emit Deposit event with ETH and wstETH amounts
+│   ├── should emit WstETHDeposited event with shares minted
+│   ├── should handle zero ETH deposit
+│   ├── should revert on failed wstETH conversion
+│   ├── should revert on failed vault deposit
+│   ├── should revert when no shares minted by vault
+│   └── should update total wstETH balance
+├── receivePayment
+│   ├── should accept ETH payments from borrowers and convert to wstETH
+│   ├── should deposit payments to Symbiotic vault
+│   ├── should emit ReceivePayment event
+│   ├── should emit WstETHDeposited event
+│   ├── should handle unauthorized caller
+│   ├── should handle zero amount
+│   ├── should handle zero address
+│   ├── should validate ETH amount matches msg.value
+│   └── should update pool wstETH balance
+├── getWstETHBalance
+│   ├── should return current wstETH balance in Symbiotic vault
+│   ├── should update after new deposits
+│   ├── should include network security rewards earned
+│   ├── should be view function
+│   ├── should handle zero balance correctly
+│   └── should query vault balanceOf
+├── getCredoraSharesAddress
+│   ├── should return CredoraShares contract address
+│   └── should be view function
+├── getStETHAddress
+│   ├── should return stETH contract address
+│   └── should be pure function
+├── getWstETHAddress
+│   ├── should return wstETH contract address
+│   └── should be pure function
+└── getSymbioticVaultAddress
+    ├── should return Symbiotic vault contract address
+    └── should be pure function
+
