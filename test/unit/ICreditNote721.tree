@@ -1,0 +1,49 @@
+ICreditNote721
+├── mintWithDeposit
+│   ├── should mint ERC-721 token to recipient
+│   ├── should deposit CRD tokens to token balance
+│   ├── should emit Minted event
+│   ├── should revert on zero address
+│   ├── should revert on zero amount
+│   ├── should assume CRD tokens are already in contract
+│   └── should increment nextId
+├── deposit
+│   ├── should accept CRD deposit to existing token
+│   ├── should increase token CRD balance
+│   ├── should emit Deposited event
+│   ├── should revert on zero amount
+│   ├── should revert on non-existent token
+│   └── should allow anyone to deposit
+├── redeem
+│   ├── should revert with not implemented message
+│   └── should be marked as TODO/TBD
+├── balanceOfStable
+│   ├── should return CRD balance for existing token
+│   ├── should return zero for non-existent token
+│   └── should be view function
+├── nextId
+│   ├── should return next token ID to be minted
+│   └── should be view function
+├── totalCRDHeld
+│   ├── should return total CRD tokens held by contract
+│   └── should be view function
+├── ERC721 Standard Functions
+│   ├── ownerOf should return correct owner
+│   ├── balanceOf should return token count for address
+│   ├── safeTransferFrom should transfer token ownership
+│   ├── transferFrom should transfer token ownership
+│   ├── approve should set token approval
+│   ├── setApprovalForAll should set operator approval
+│   ├── getApproved should return token approval
+│   ├── isApprovedForAll should return operator approval
+│   ├── supportsInterface should return true for ERC721 interfaces
+│   ├── tokenURI should return token metadata URI
+│   └── totalSupply should return total minted tokens
+├── Reentrancy Protection
+│   ├── should prevent reentrancy in deposit function
+│   └── should prevent reentrancy in mintWithDeposit function
+├── Error Handling
+│   ├── should revert ZeroAddress on zero address inputs
+│   ├── should revert ZeroAmount on zero amount inputs
+│   ├── should revert TokenNotFound on non-existent tokens
+│   └── should revert NotOwner when caller is not token owner

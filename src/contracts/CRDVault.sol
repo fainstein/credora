@@ -100,8 +100,13 @@ contract CRDVault is ICRDVault, Ownable {
         // Only NoteIssuer can call this function
         if (msg.sender != noteIssuer) revert UnauthorizedAccess();
 
-        // Transfer CRD from vault to NoteIssuer
-        // In production, this would transfer actual CRD tokens
+        // Check vault has enough CRD tokens
+        uint256 vaultBalance = crdToken.balanceOf(address(this));
+        if (vaultBalance < amount) revert InsufficientBalance();
+
+        // Transfer CRD tokens from vault to destination (NoteIssuer or CreditNote721)
+        crdToken.safeTransfer(noteIssuerAddr, amount);
+
         emit CRDTransferredToNote(noteIssuerAddr, noteId, amount);
     }
 
@@ -117,8 +122,9 @@ contract CRDVault is ICRDVault, Ownable {
         validAddress(from)
         validAmount(amount)
     {
-        // Accept CRD return from anyone (flexible for different redemption scenarios)
-        // In production, this would transfer actual CRD tokens to the vault
+        // Transfer CRD tokens from sender back to vault
+        crdToken.safeTransferFrom(from, address(this), amount);
+
         emit CRDReturnedFromNote(from, noteId, amount);
     }
 

@@ -1,0 +1,55 @@
+INoteIssuer
+├── createNote
+│   ├── should validate proof with verifier
+│   ├── should check advance payment requirement (20% of loan)
+│   ├── should accept ETH for advance payment and convert to wstETH via pool
+│   ├── should transfer advance payment to pool
+│   ├── should mint CRD tokens for the loan amount
+│   ├── should create ERC1155 note with borrower and creditor
+│   ├── should emit NoteCreated event
+│   ├── should revert on invalid proof
+│   ├── should revert on insufficient advance payment
+│   ├── should revert on loan amount too high
+│   └── should revert on zero address borrower
+├── repay
+│   ├── should accept ETH payments and convert to wstETH via pool
+│   ├── should transfer payment to pool
+│   ├── should update note debt balance
+│   ├── should mark note as repaid when fully paid
+│   ├── should emit Repayment event
+│   ├── should handle overpayments correctly
+│   ├── should revert on inactive note
+│   └── should revert on zero amount
+├── redeemNote
+│   └── TODO: Implement redemption tests for future withdrawals
+├── getNoteCRDBalance
+│   ├── should return CRD balance for valid note
+│   ├── should return zero for invalid note
+│   ├── should update after repayments
+│   └── should be view function
+├── getNoteRemainingDebt
+│   ├── should return correct remaining debt
+│   ├── should return zero for repaid note
+│   ├── should update after repayments
+│   └── should be view function
+├── getNote
+│   ├── should return complete note data for valid note
+│   ├── should revert for invalid note
+│   └── should be view function
+├── isNoteMature
+│   ├── should return true for notes past maturity
+│   ├── should return false for active notes
+│   └── should be view function
+├── calculateRequiredAdvance
+│   ├── should calculate 20% of loan amount
+│   ├── should handle different loan amounts
+│   └── should be view function
+├── getMaxLoanAmount
+│   ├── should return configured maximum loan amount
+│   └── should be view function
+├── getAdvanceRatio
+│   ├── should return advance payment ratio (2000 = 20%)
+│   └── should be view function
+└── getVerifier
+    ├── should return verifier contract address
+    └── should be view function
