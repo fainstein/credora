@@ -1,0 +1,124 @@
+{
+  "protocol": {
+    "name": "Credora Protocol",
+    "version": "1.0.0",
+    "description": "Decentralized lending protocol with salary-based credit",
+    "network": "sepolia",
+    "chainId": 11155111
+  },
+  "deployment": {
+    "timestamp": "2024-01-17T22:00:00Z",
+    "deployer": "0x7c22b07a9d65228a54390b03bc109e46d3bb94ef",
+    "tool": "Foundry",
+    "status": "completed",
+    "totalContracts": 7
+  },
+  "contracts": {
+    "credoraShares": {
+      "name": "CredoraShares",
+      "symbol": "CRD",
+      "address": "0x8763fe9e859CeFbaCfD567a9fb45E11D60862Fdc",
+      "description": "ERC20 token representing pool shares",
+      "type": "ERC20",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x8763fe9e859CeFbaCfD567a9fb45E11D60862Fdc",
+      "source": "src/contracts/CredoraShares.sol"
+    },
+    "pool": {
+      "name": "Pool",
+      "address": "0x18d4E173d80a967AE74C4696abf2f5CCf5175FD1",
+      "description": "Main liquidity pool for wstETH deposits",
+      "type": "LiquidityPool",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x18d4E173d80a967AE74C4696abf2f5CCf5175FD1",
+      "source": "src/contracts/Pool.sol"
+    },
+    "groth16Verifier": {
+      "name": "Groth16Verifier",
+      "address": "0xf6D1f05A947ef8be93fA6b6696aC6a0105CE092c",
+      "description": "Zero-knowledge proof verifier",
+      "type": "Verifier",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0xf6D1f05A947ef8be93fA6b6696aC6a0105CE092c",
+      "source": "src/contracts/generated/verifier.sol"
+    },
+    "verifierWrapper": {
+      "name": "Groth16VerifierWrapper",
+      "address": "0x8B45ecf6A42611A967319e3541fE13c3D6f3DB90",
+      "description": "Verifier wrapper with IVerifier interface",
+      "type": "Wrapper",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x8B45ecf6A42611A967319e3541fE13c3D6f3DB90",
+      "source": "src/contracts/Groth16VerifierWrapper.sol"
+    },
+    "crdVault": {
+      "name": "CRDVault",
+      "address": "0x0aE0c4Da6597aA4500CC2d9378f2c5b404DD352A",
+      "description": "CRD token vault for managing deposits",
+      "type": "Vault",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x0aE0c4Da6597aA4500CC2d9378f2c5b404DD352A",
+      "source": "src/contracts/CRDVault.sol"
+    },
+    "creditNote721": {
+      "name": "CreditNote721",
+      "symbol": "CCN",
+      "address": "0xd4473179E0FD3e6F7dF92dae2DECD73cE99D45CA",
+      "description": "ERC721 credit notes with on-chain metadata",
+      "type": "ERC721",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0xd4473179E0FD3e6F7dF92dae2DECD73cE99D45CA",
+      "source": "src/contracts/CreditNote721.sol"
+    },
+    "noteIssuer": {
+      "name": "NoteIssuer",
+      "address": "0x1E4E86fd9F416DF90Ac9A3FC09ADeB1dBC630e87",
+      "description": "Credit note factory and loan manager",
+      "type": "Factory",
+      "verified": true,
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x1E4E86fd9F416DF90Ac9A3FC09ADeB1dBC630e87",
+      "source": "src/contracts/NoteIssuer.sol"
+    }
+  },
+  "networkConfig": {
+    "stETH": "0x3e3FE7dBc6B4C189E7128855dD526361c49b40Af",
+    "wstETH": "0xB82381A3fBD3FaFA77B3a7bE693342618240067b",
+    "symbioticVault": "0x77F170Dcd0439c0057055a6D7e5A1Eb9c48cCD2a"
+  },
+  "features": {
+    "erc20Token": "CredoraShares (CRD)",
+    "liquidityPool": "wstETH deposits via Symbiotic",
+    "zkProofs": "Groth16 verification for salary proofs",
+    "creditNotes": "ERC721 with on-chain metadata",
+    "vaultSystem": "CRD token management",
+    "loanManagement": "Automated loan lifecycle"
+  },
+  "addresses": {
+    "all": [
+      "0x8763fe9e859CeFbaCfD567a9fb45E11D60862Fdc",
+      "0x18d4E173d80a967AE74C4696abf2f5CCf5175FD1",
+      "0xf6D1f05A947ef8be93fA6b6696aC6a0105CE092c",
+      "0x8B45ecf6A42611A967319e3541fE13c3D6f3DB90",
+      "0x0aE0c4Da6597aA4500CC2d9378f2c5b404DD352A",
+      "0xd4473179E0FD3e6F7dF92dae2DECD73cE99D45CA",
+      "0x1E4E86fd9F416DF90Ac9A3FC09ADeB1dBC630e87"
+    ],
+    "core": [
+      "0x8763fe9e859CeFbaCfD567a9fb45E11D60862Fdc",
+      "0x18d4E173d80a967AE74C4696abf2f5CCf5175FD1",
+      "0x1E4E86fd9F416DF90Ac9A3FC09ADeB1dBC630e87"
+    ],
+    "tokens": [
+      "0x8763fe9e859CeFbaCfD567a9fb45E11D60862Fdc",
+      "0xd4473179E0FD3e6F7dF92dae2DECD73cE99D45CA"
+    ]
+  },
+  "deploymentConfig": {
+    "rpcUrl": "https://ethereum-sepolia.publicnode.com",
+    "etherscanApiKey": "UR369JPKTPD2NY5CUTPBBDF5BB7S5YU9B9",
+    "gasSettings": {
+      "gasLimit": "0x8f0d180",
+      "gasPrice": "auto"
+    }
+  }
+}

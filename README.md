@@ -144,11 +144,11 @@ src/interfaces/
 
 ### ERC721 Credit Notes with On-Chain Metadata
 
-- **Fully On-Chain**: TODA la información del préstamo almacenada en storage del contrato
-- **Dynamic Metadata**: JSON generado dinámicamente desde storage en cada consulta
-- **Composable**: Otros protocolos pueden leer datos reales del NFT
-- **Transferable**: NFTs pueden ser traded en mercados secundarios
-- **Lifecycle Tracking**: Estado actualizado en tiempo real (Active/Repaid/Defaulted)
+- **Fully On-Chain**: ALL loan information stored in contract storage
+- **Dynamic Metadata**: JSON generated dynamically from storage on each query
+- **Composable**: Other protocols can read real NFT data
+- **Transferable**: NFTs can be traded on secondary markets
+- **Lifecycle Tracking**: Status updated in real-time (Active/Repaid/Defaulted)
 
 #### Metadata Structure
 ```json
@@ -177,12 +177,12 @@ function getNotePrincipalAmount(uint256 tokenId) returns (uint256)
 function getNoteInterestRate(uint256 tokenId) returns (uint256)
 function getNoteStatus(uint256 tokenId) returns (NoteStatus)
 
-// Metadata dinámica
-function tokenURI(uint256 tokenId) returns (string) // JSON generado desde storage
+// Dynamic metadata
+function tokenURI(uint256 tokenId) returns (string) // JSON generated from storage
 
-// Actualizaciones
-function recordPayment(uint256 tokenId, uint256 amount) // Actualiza pagos
-function updateNoteStatus(uint256 tokenId, NoteStatus status) // Cambia estado
+// Updates
+function recordPayment(uint256 tokenId, uint256 amount) // Records payments
+function updateNoteStatus(uint256 tokenId, NoteStatus status) // Updates status
 ```
 
 ### Verification System

@@ -203,9 +203,8 @@ contract CreditNote721 is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     /**
      * @notice Redeem a note by burning it and returning CRD to vault
      * @dev TODO/TBD: Not implemented in this version
-     * @param tokenId Token ID to redeem
      */
-    function redeem(uint256 tokenId) external pure {
+    function redeem(uint256 /* tokenId */) external pure {
         // TODO: Implement redemption logic
         // This would involve:
         // 1. Burning the NFT

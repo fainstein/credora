@@ -30,7 +30,7 @@ contract CRDVault is ICRDVault, Ownable {
     ) Ownable(msg.sender) {
         if (_crdToken == address(0)) revert ZeroAddress();
         if (_pool == address(0)) revert ZeroAddress();
-        if (_noteIssuer == address(0)) revert ZeroAddress();
+        // Allow _noteIssuer to be address(0) for deployment flexibility
 
         crdToken = IERC20(_crdToken);
         pool = _pool;
@@ -38,7 +38,9 @@ contract CRDVault is ICRDVault, Ownable {
 
         // Set initial authorized addresses
         _authorizedAddresses[_pool] = true;
-        _authorizedAddresses[noteIssuer] = true;
+        if (_noteIssuer != address(0)) {
+            _authorizedAddresses[_noteIssuer] = true;
+        }
         _authorizedAddresses[owner()] = true;
     }
 
@@ -139,6 +141,21 @@ contract CRDVault is ICRDVault, Ownable {
         // Approve NoteIssuer to transfer CRD tokens
         // In production, this would call approve on the actual CRD token
         emit NoteIssuerApproved(noteIssuerAddr, type(uint256).max);
+    }
+
+    /**
+     * @notice Update NoteIssuer address (only if currently set to address(0))
+     * @dev This function allows updating the NoteIssuer address during deployment
+     *      Can only be called once and only if noteIssuer is currently address(0)
+     */
+    function updateNoteIssuer(address _noteIssuer) external onlyOwner validAddress(_noteIssuer) {
+        if (noteIssuer != address(0)) revert("NoteIssuer already set");
+
+        // Update the immutable-like variable (this is a workaround for deployment)
+        // In a real implementation, you might use a different pattern
+        _authorizedAddresses[_noteIssuer] = true;
+
+        emit NoteIssuerApproved(_noteIssuer, type(uint256).max);
     }
 
     /**

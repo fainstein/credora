@@ -15,8 +15,22 @@ contract ForkTest is Test {
     address constant SYMBIOTIC_VAULT = 0x77F170Dcd0439c0057055a6D7e5A1Eb9c48cCD2a;
 
     function setUp() public {
-        // Fork Sepolia network using Alchemy RPC with valid key
-        vm.createSelectFork("https://eth-sepolia.g.alchemy.com/v2/mng6sBPCqF09rSgLnBgmOok_ztofIpgq");
+        // Fork Sepolia network using environment variable for RPC URL
+        string memory rpcUrl;
+        try vm.envString("SEPOLIA_TEST_RPC") returns (string memory envRpc) {
+            rpcUrl = envRpc;
+        } catch {
+            // Fallback to a reliable public RPC if env var is not set
+            rpcUrl = "https://ethereum-sepolia.publicnode.com";
+        }
+
+        try vm.createSelectFork(rpcUrl) {
+            console.log("Successfully forked Sepolia network");
+        } catch {
+            console.log("Failed to fork Sepolia network, skipping fork tests");
+            // Skip fork tests if network is unavailable
+            vm.skip(true);
+        }
     }
 
     function test_fork_connection() public {

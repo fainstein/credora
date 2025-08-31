@@ -194,7 +194,7 @@ contract NoteIssuer is INoteIssuer {
     function redeemNote(
         uint256 /* noteId */,
         address /* redeemer */
-    ) external pure returns (uint256 wstETHAmount) {
+    ) external pure returns (uint256 /* wstETHAmount */) {
         // TODO: Implement redemption logic
         // This will involve burning CRD tokens and returning wstETH equivalent
         revert("Not implemented yet");
